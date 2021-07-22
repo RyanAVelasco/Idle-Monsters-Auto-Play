@@ -73,12 +73,12 @@ def map(type, location):
     pass
 
 
-# while True:
-update_locations()
-for item, coord in icons.items():
-    if not coord == None:
-        print('[ITEM]', item, '\t', '[COORD]', coord)
-for mapss, coord in maps.items():
-    if not coord == None:
-        print('[MAPSS]', mapss, '\t', '[COORD]', coord)
+while True:
+    update_locations()
+    for item, coord in icons.items():
+        if not coord == None:
+            print('[ITEM]', item, '\t', '[COORD]', coord)
+    for mapss, coord in maps.items():
+        if not coord == None:
+            print('[MAPSS]', mapss, '\t', '[COORD]', coord)
 quit()
