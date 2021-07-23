@@ -13,10 +13,15 @@ tooltip, It's at %x% - %y%
 return
 
 numpad0::
+;; window size must be set to 480x854 for code to work - game played on STEAM
+;; to make sure it's launched at this resolution
+;; right-click Idle Monsters Td > Properties... > LAUNCH OPTIONS > type this is field >> -screen-width 480 -screen-height 854
+;; load the game and you're set
+
 if not WinActive("IdlesMonsterTD")
 	WinActivate, IdleMonsterTD
 	MouseMove, 100, 100 ; This is to make sure the mouse is over the window in case of accidental clicks outside the game
-
+	
 ; image location variable
 image_folder = placeholdertext ; if images not in same folder then replace this with image location minus filename
 ;onscreen variables
