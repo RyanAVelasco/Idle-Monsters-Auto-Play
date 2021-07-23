@@ -4,7 +4,7 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode, Pixel, Relative
 
-PrintScreen & ScrollLock::reload
+ScrollLock::reload
 Pause::pause
 
 [::
@@ -13,156 +13,165 @@ tooltip, It's at %x% - %y%
 return
 
 numpad0::
-BlockInput, On
-BlockInput, SendAndMouse
-BlockInput, MouseMove
+if not WinActive("IdlesMonsterTD")
+	WinActivate, IdleMonsterTD
+	MouseMove, 100, 100 ; This is to make sure the mouse is over the window in case of accidental clicks outside the game
 
-boss_rush = 151, 58
+; image location variable
+image_folder = placeholdertext ; if images not in same folder then replace this with image location minus filename
+;onscreen variables
+; boss_rush = %image_folder%
+button_prestige = %image_folder%button_prestige.png
+button_prestige_prestige = %image_folder%button_prestige_prestige.png
+button_prestige_prestige_lets_go = %image_folder%button_prestige_prestige_lets_go.png
+button_layout_monster_close = %image_folder%button_layout_monster_close.png
+button_layout_monster = %image_folder%button_layout_monster.png
+button_layout_monster_load = %image_folder%button_layout_monster_load.png
+button_layout_monster_save = %image_folder%button_layout_monster_save.png
+button_layout_monster_close = %image_folder%button_layout_monster_close.png
+button_monster_level_up_upgrade_purchase_minimal = %image_folder%button_monster_level_up_upgrade_purchase_minimal.png
+button_monster_level_up_upgrade_purchase_minimal_inactive = %image_folder%button_monster_level_up_upgrade_purchase_minimal_inactive.png
+button_monster_level_expand = %image_folder%button_monster_level_expand.png
+button_monster_level_collapse = %image_folder%button_monster_level_collapse.png
+button_monster_level_close = %image_folder%button_monster_level_close.png
+bonus_drone_swarm = %image_folder%bonus_drone_swarm.png
+bonus_drone_swarm_play = %image_folder%bonus_drone_swarm_play.png
+bonus_cargo_carrier = %image_folder%bonus_cargo_carrier.png
+bonus_cargo_carrier_play = %image_folder%bonus_cargo_carrier_play.png
+button_active_play_close = %image_folder%button_active_play_close.png
+bonus_tech_ship = %image_folder%bonus_tech_ship.png
+bonus_tech_ship_play = %image_folder%bonus_tech_ship_play.png
+button_active_play_close = %image_folder%button_active_play_close.png
+drone_swarm_close = %image_folder%button_prestige
+cargo_carrier_close = %image_folder%button_prestige
+tech_ship_close = %image_folder%button_prestige
+skill_slot_1 = %image_folder%button_prestige
+skill_slot_2 = %image_folder%button_prestige
+skill_slot_3 = %image_folder%button_prestige
+skill_slot_4 = %image_folder%button_prestige
+misc_death_skull = %image_folder%misc_death_skull.png
+;maps variables
+map_normal_map_cursed_clouds_asset = %image_folder%map_normal_map_cursed_clouds_asset.png
+map_normal_map_beach_run_asset = %image_folder%map_normal_map_beach_run_asset.png
+map_normal_map_enchanted_forest_asset = %image_folder%map_normal_map_enchanted_forest_asset.png
+map_normal_snowfall_asset = %image_folder%map_normal_snowfall_asset.png
+map_normal_map_lava_cave_asset = %image_folder%map_normal_map_lava_cave_asset.png
+map_normal_map_deadwood_asset = %image_folder%map_normal_map_deadwood_asset.png
+map_resource_farm_asset = %image_folder%map_resource_farm_asset.png
+map_bonus_deep_pus_asseth = %image_folder%map_bonus_deep_pus_asseth.png
 
-prestige = 32, 130
-prestige_prestige = 247, 752
-prestige_normal_map = 179, 336
-prestige_close = 430, 162
-
-monster_layout = 459, 129
-monster_layout_1_load = 401, 378
-
-monster_close = 459, 798
-level_up = 324, 798
-level_up_close = 460, 798
-drone_swarm = 31, 183
-drone_swarm_close = 409, 271
-drone_swarm_play = 248, 619
-cargo_carrier = 30, 243
-cargo_carrier_close = 436, 232
-cargo_carrier_play = 241, 684
-tech_ship = 34, 299
-tech_ship_play = 241, 688
-tech_ship_close = 433, 223
-
-close_active_play = 409, 281
-
-skill1 = 137, 809
-skill2 = 210, 809
-skill3 = 290, 809
-skill4 = 359, 809
-
-
-normal_cursedclouds1 = 155, 214
-normal_cursedclouds2 = 209, 508
-normal_beachrun_1 = 183, 287
-normal_beachrun_2 = 183, 443
-normal_enchantedforest1 = 185, 212
-normal_enchantedforest2 = 207, 477
-normal_snowfall1 = 181, 267
-normal_snowfall2 = 181, 451
-normal_lavacave1 = 198, 444
-normal_lavacave2 = 377, 477
-normal_deadwood1 = 209, 286
-normal_deadwood2 = 338, 586
-
-
-
-rot1_pos1 = %normal_cursedclouds1%
-rot1_pos2 = %normal_cursedclouds2%
-rot2_pos1 = %normal_beachrun_1%
-rot2_pos2 = %normal_beachrun_2%
-rot3_pos1 = %normal_enchantedforest1%
-rot3_pos2 = %normal_enchantedforest2%
-rot4_pos1 = %normal_snowfall1%
-rot4_pos2 = %normal_snowfall2%
-rot5_pos1 = %normal_lavacave1%
-rot5_pos2 = %normal_lavacave2%
-rot6_pos1 = %normal_deadwood1%
-rot6_pos2 = %normal_deadwood2%
-
-;pos3 = %normal_beachrun_1%
-;pos4 = %normal_lavacave1%
-; pos5 = 279, 439
-; pos6 = 277, 528
-; pos7 = 276, 629
-; pos8 = 279, 695
-; pos9 = 199, 657
-; pos10 = 453, 429
-
-loop,  {
-	loop, 100 {
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		 
-		; monsters to level up
-		click, %rot1_pos1%
-		sleep, %sleep1%
-		click, %level_up%
-		sleep, %sleep2%
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		click, %rot1_pos2%
-		sleep, %sleep1%
-		click, %level_up%
-		sleep, %sleep2%	
-		click, %level_up_close%
-		sleep, %sleep2%
-		;click, %tech_ship%
-		;sleep, %sleep1%
-		;click, %tech_ship_play%
-		;sleep, %sleep1%
-		;click, %tech_ship_close%
-		;sleep, %sleep1%
-		; random, sleep1, 75, 250
-		; random, sleep2, 75, 250
-		
-		
-		click, %close_active_play%
-		sleep, %sleep2%	
-		
-		
-		; drone swarm
-		click, %drone_swarm%
-		sleep, %sleep2%
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		click, %drone_swarm_play%
-		sleep, %sleep1%
-		click, %drone_swarm_close%
-		sleep, %sleep2%
-		;cargo carrier
-		click, %cargo_carrier%
-		sleep, %sleep1%
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		click, %cargo_carrier_play%
-		sleep, %sleep2%
-		click, %cargo_carrier_close%
-		sleep, %sleep1%
-		;spells
-		click, %skill1% ; slot 1
-		sleep, %sleep2%
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		click, %skill2% ; slot 2
-		sleep, %sleep1%
-		click, %skill3% ; slot 3
-		sleep, %sleep2%
-		random, sleep1, 75, 250
-		random, sleep2, 75, 250
-		click, %skill4% ; slot 4
-		sleep, %sleep1%
-		}
-		
-	;lick, %prestige%
-	;sleep, %sleep1%
-	;click, %prestige_prestige%
-	;sleep, %sleep2%
-	;click, %prestige_close%
-	;sleep, %sleep1%
-	;click, %prestige_normal_map%
-	;sleep, 10000 ;10 seconds
-	;click, %monster_layout%
-	;sleep, %sleep1%
-	;click, %monster_layout_1_load%
-	;sleep, %sleep2%	
-	;click, %boss_rush%
-	
+;; Main code begins here
+while True {
+	;; find present ui elements and assign them to x, y position variables
+	;onscreen elements
+	ImageSearch, drone_swarm_x, drone_swarm_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal%
+	ImageSearch, boss_rush_x, boss_rush_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %boss_rush%
+	ImageSearch, map_normal_map_enchanted_forest_x, map_normal_map_enchanted_forest_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_enchanted_forest%
+	ImageSearch, button_layout_monster_close_x, button_layout_monster_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_close%
+	ImageSearch, button_layout_monster_x, button_layout_monster_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster%
+	ImageSearch, button_layout_monster_load_x, button_layout_monster_load_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_load%
+	ImageSearch, button_layout_monster_save_x, button_layout_monster_save_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_save%
+	ImageSearch, image_folder_x, image_folder_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_close%
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal%
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_inactive_x, button_monster_level_up_upgrade_purchase_minimal_inactive_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal_inactive%
+	ImageSearch, button_monster_level_expand_x, button_monster_level_expand_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_expand%
+	ImageSearch, button_monster_level_collapse_x, button_monster_level_collapse_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_collapse%
+	ImageSearch, button_monster_level_close_x, button_monster_level_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_close%
+	ImageSearch, bonus_drone_swarm_x, bonus_drone_swarm_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_drone_swarm%
+	ImageSearch, bonus_drone_swarm_play_x, bonus_drone_swarm_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_drone_swarm_play%
+	ImageSearch, bonus_cargo_carrier_x, bonus_cargo_carrier_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_cargo_carrier%
+	ImageSearch, bonus_cargo_carrier_play_x, bonus_cargo_carrier_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_cargo_carrier_play%
+	ImageSearch, button_active_play_close_x, button_active_play_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_active_play_close%
+	ImageSearch, bonus_tech_ship_x, bonus_tech_ship_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_tech_ship%
+	ImageSearch, bonus_tech_ship_play_x, bonus_tech_ship_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_tech_ship_play%
+	ImageSearch, button_active_play_close_x, button_active_play_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_active_play_close%
+	ImageSearch, drone_swarm_close_x, drone_swarm_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %drone_swarm_close%
+	ImageSearch, cargo_carrier_close_x, cargo_carrier_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %cargo_carrier_close%
+	ImageSearch, tech_ship_close_x, tech_ship_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %tech_ship_close%
+	ImageSearch, skill_slot_1_x, skill_slot_1_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_1%
+	ImageSearch, skill_slot_2_x, skill_slot_2_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_2%
+	ImageSearch, skill_slot_3_x, skill_slot_3_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_3%
+	ImageSearch, skill_slot_4_x, skill_slot_4_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_4%
+	ImageSearch, death_x, death_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %misc_death_skull%
+	if (errorlevel=0) {
+		sleep, 10500
+		ImageSearch, button_prestige_x, button_prestige_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige%
+		click, %button_prestige_x% %button_prestige_y%
+		sleep, 250
+		ImageSearch, button_prestige_prestige_x, button_prestige_prestige_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige_prestige%
+		click, %button_prestige_prestige_x% %button_prestige_prestige_y%
+		sleep, 250
+		ImageSearch, button_prestige_prestige_lets_go_x, button_prestige_prestige_lets_go_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige_prestige_lets_go%
+		click, %button_prestige_prestige_lets_go_x% %button_prestige_prestige_lets_go_y%
+		sleep, 10000
+		click, %button_layout_monster_x% %button_layout_monster_y%
+		sleep, 250
+		click, %button_layout_monster_load_x% %button_layout_monster_load_x%
 	}
-
+	;maps & unique asset ;asssign monster coords	
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_cursed_clouds_asset%
+	if (errorlevel=0) {
+		monster_position_dps_x = 159, monster_position_dps_y = 204
+		monster_position_support_x = 211, monster_position_support_y = 503
+	}
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_beach_run_asset%
+	if (errorlevel=0) {
+		monster_position_dps_x = 179, monster_position_dps_y = 528
+		monster_position_support_x = 316, monster_position_support_y = 287
+	}
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_enchanted_forest_asset%
+	if (errorlevel=0) {
+		monster_position_dps_x = 210, monster_position_dps_y = 474
+		monster_position_support_x = 314, monster_position_support_y = 643
+	}
+	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_snowfall_asset%
+	; if (errorlevel=0) {
+	; 	monster_position_dps_x = 159
+	; 	monster_position_dps_y = 204
+	; 	monster_position_support_x = 211
+	; 	monster_position_support_y = 503
+	; }
+	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_lava_cave_asset%
+	; if (errorlevel=0) {
+	; 	monster_position_dps_x = 159
+	; 	monster_position_dps_y = 204
+	; 	monster_position_support_x = 211
+	; 	monster_position_support_y = 503
+	; }
+	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_deadwood_asset%
+	; if (errorlevel=0) {
+	; 	monster_position_dps_x = 159
+	; 	monster_position_dps_y = 204
+	; 	monster_position_support_x = 211
+	; 	monster_position_support_y = 503
+	; }
+	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_resource_farm_asset%
+	; if (errorlevel=0) {
+	; 	monster_position_dps_x = 159
+	; 	monster_position_dps_y = 204
+	; 	monster_position_support_x = 211
+	; 	monster_position_support_y = 503
+	; }
+	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_bonus_deep_push_asset%
+	; if (errorlevel=0) {
+	; 	monster_position_dps_x = 159
+	; 	monster_position_dps_y = 204
+	; 	monster_position_support_x = 211
+	; 	monster_position_support_y = 503
+	; }
+	
+	; if button_monster_level_collapse_x >= 0 && button_monster_level_collapse_y >= 0:
+	; 	click, %button_monster_level_collapse_x%, %button_monster_level_collapse_y%
+	click, %button_active_play_close_x% %button_active_play_close_y%
+	sleep, 50
+	click, %monster_position_dps_x% %monster_position_dps_y%
+	sleep, 50
+	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%
+	sleep, 50
+	click, %monster_position_support_x% %monster_position_support_y%
+	sleep, 50
+	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%	
+	sleep, 50
+	click, 435, 306 ; USED UNTIL IMAGESEARCH..ACTIVEPLAY CLOSE CODED
+	sleep, 5000
+}
