@@ -4,11 +4,12 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode, Pixel, Relative
 
-PgUp & PgDn::reload
+ScrollLock::reload
 Pause::pause
 
 [::
 mouseGetPos, x, Y
+Clipboard = %x%, %y%
 tooltip, It's at %x% - %y%
 return
 
@@ -22,14 +23,22 @@ if not WinActive("IdlesMonsterTD")
 	WinActivate, IdleMonsterTD
 	MouseMove, 100, 100
 
+
+;;this'll block any mouse and keyboard inputs to make sure you don't screw up and accidentally click off game screen,
+;;creating some irritating catastrophe
+;;if you do somehow go offscreen, code further down will reactivate Idle Monsters TD window
+;;if for some ultra rare reason things go out of control and you can't stop the script from loading every program,
+;;you have then 'IMMEDIATELY': [CTRL+ALT+DELETE] > [TASK MANAGER] > click [AUTOHOTKEY UNICODE 64-BIT] > press [DELETE] key
+;;if for some ultra times infinity reason it fails, then restarting your PC is your only option: its happened once out of,
+;;the thousands of tests I've done so don't expect it too occur unless your unlucky
+
 BlockInput, On
 BlockInput, SendAndMouse
 BlockInput, MouseMove
 
 ; image location variable
-; F:\CACHE DRIVE\.Studies\Images\idle_monster_td\
-image_folder = F:\CACHE DRIVE\.Studies\Images\idle_monster_td\ ; if images not in same folder then replace this with image location minus filename
-;onscreen variables
+image_folder = "paste in image folder path" ;;if images not in same folder then replace this with image location minus filename
+;onscreen variables for determining which is clickable, ignoring what is not
 ; boss_rush = %image_folder%
 button_prestige = %image_folder%button_prestige.png
 button_prestige_prestige = %image_folder%button_prestige_prestige.png
@@ -44,155 +53,193 @@ button_monster_level_up_upgrade_purchase_minimal_inactive = %image_folder%button
 button_monster_level_expand = %image_folder%button_monster_level_expand.png
 button_monster_level_collapse = %image_folder%button_monster_level_collapse.png
 button_monster_level_close = %image_folder%button_monster_level_close.png
+bonus_close_variation_1 = %image_folder%bonus_close_variation_1.png
+bonus_close_variation_2 = %image_folder%bonus_close_variation_2.png
+bonus_close_variation_3 = %image_folder%bonus_close_variation_3.png
+bonus_close_variation_4 = %image_folder%bonus_close_variation_4.png
+bonus_close_variation_5 = %image_folder%bonus_close_variation_5.png
 bonus_drone_swarm = %image_folder%bonus_drone_swarm.png
 bonus_drone_swarm_play = %image_folder%bonus_drone_swarm_play.png
 bonus_cargo_carrier = %image_folder%bonus_cargo_carrier.png
 bonus_cargo_carrier_play = %image_folder%bonus_cargo_carrier_play.png
-butto0n_active_play_close = %image_folder%button_active_play_close.png
+bonus_cargo_carrier_close = %image_folder%bonus_cargo_carrier_close.png
+bonus_active_play = %image_folder%bonus_active_play.png
 bonus_tech_ship = %image_folder%bonus_tech_ship.png
 bonus_tech_ship_play = %image_folder%bonus_tech_ship_play.png
-button_active_play_close = %image_folder%button_active_play_close.png
 drone_swarm_close = %image_folder%button_prestige
 cargo_carrier_close = %image_folder%button_prestige
 tech_ship_close = %image_folder%button_prestige
-skill_slot_1 = %image_folder%button_prestige
-skill_slot_2 = %image_folder%button_prestige
-skill_slot_3 = %image_folder%button_prestige
-skill_slot_4 = %image_folder%button_prestige
+skill_slot_1 = %image_folder%skill_slot.png
+skill_slot_2 = %image_folder%skill_slot.png
+skill_slot_3 = %image_folder%skill_slot.png
+skill_slot_4 = %image_folder%skill_slot.png
 misc_death_skull = %image_folder%misc_death_skull.png
-;maps variables
-map_normal_map_cursed_clouds_asset = %image_folder%map_normal_map_cursed_clouds_asset.png
-map_normal_map_beach_run_asset = %image_folder%map_normal_map_beach_run_asset.png
-map_normal_map_enchanted_forest_asset = %image_folder%map_normal_map_enchanted_forest_asset.png
+;variable containing the assets needed to determine which map you're on
+map_normal_cursed_clouds_asset = %image_folder%map_normal_cursed_clouds_asset.png
+map_normal_beach_run_asset = %image_folder%map_normal_beach_run_asset.png
+map_normal_enchanted_forest_asset = %image_folder%map_normal_enchanted_forest_asset.png
 map_normal_snowfall_asset = %image_folder%map_normal_snowfall_asset.png
-map_normal_map_lava_cave_asset = %image_folder%map_normal_map_lava_cave_asset.png
-map_normal_map_deadwood_asset = %image_folder%map_normal_map_deadwood_asset.png
-map_resource_farm_asset = %image_folder%map_resource_farm_asset.png
-map_bonus_deep_pus_asseth = %image_folder%map_bonus_deep_pus_asseth.png
+map_normal_lava_cave_asset = %image_folder%map_normal_lava_cave_asset.png
+map_normal_deadwood_asset = %image_folder%map_normal_deadwood_asset.png
+; map_resource_farm_asset = %image_folder%map_resource_farm_asset.png
+; map_bonus_deep_push_asset = %image_folder%map_bonus_deep_push_asset.png
 
 ;; Main code begins here
 while True {
-	;; in case the window somehow goes to the background - it's happened to me somehow
+	;;in case the window somehow goes to the background - it's happened to me somehow
 	if not WinActive("IdlesMonsterTD")
 		WinActivate, IdleMonsterTD
 		MouseMove, 100, 100
 
-	;; find present ui elements and assign them to x, y position variables
-	;onscreen elements
-	ImageSearch, drone_swarm_x, drone_swarm_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal%
-	ImageSearch, boss_rush_x, boss_rush_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %boss_rush%
-	ImageSearch, map_normal_map_enchanted_forest_x, map_normal_map_enchanted_forest_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_enchanted_forest%
-	ImageSearch, button_layout_monster_close_x, button_layout_monster_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_close%
-	ImageSearch, button_layout_monster_x, button_layout_monster_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster%
-	ImageSearch, button_layout_monster_load_x, button_layout_monster_load_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_load%
-	ImageSearch, button_layout_monster_save_x, button_layout_monster_save_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_save%
-	ImageSearch, image_folder_x, image_folder_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_layout_monster_close%
-	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal%
-	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_inactive_x, button_monster_level_up_upgrade_purchase_minimal_inactive_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_up_upgrade_purchase_minimal_inactive%
-	ImageSearch, button_monster_level_expand_x, button_monster_level_expand_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_expand%
-	ImageSearch, button_monster_level_collapse_x, button_monster_level_collapse_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_collapse%
-	ImageSearch, button_monster_level_close_x, button_monster_level_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_monster_level_close%
-	ImageSearch, bonus_drone_swarm_x, bonus_drone_swarm_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_drone_swarm%
-		click, %bonus_drone_swarm_x% %bonus_drone_swarm_y%
-		sleep, 50
-	ImageSearch, bonus_drone_swarm_play_x, bonus_drone_swarm_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_drone_swarm_play%
-		click, %bonus_drone_swarm_play_x% %bonus_drone_swarm_play_y%
-		sleep, 50
-	ImageSearch, bonus_cargo_carrier_x, bonus_cargo_carrier_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_cargo_carrier%
-	ImageSearch, bonus_cargo_carrier_play_x, bonus_cargo_carrier_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_cargo_carrier_play%
-	ImageSearch, button_active_play_close_x, button_active_play_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_active_play_close%
-		click, %button_active_play_close_x% %button_active_play_close_y%
-		sleep, 50
-	ImageSearch, bonus_tech_ship_x, bonus_tech_ship_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_tech_ship%
-	ImageSearch, bonus_tech_ship_play_x, bonus_tech_ship_play_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %bonus_tech_ship_play%
-	ImageSearch, button_active_play_close_x, button_active_play_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_active_play_close%
-	ImageSearch, drone_swarm_close_x, drone_swarm_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %drone_swarm_close%
-	ImageSearch, cargo_carrier_close_x, cargo_carrier_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %cargo_carrier_close%
-	ImageSearch, tech_ship_close_x, tech_ship_close_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %tech_ship_close%
-	ImageSearch, skill_slot_1_x, skill_slot_1_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_1%
-	ImageSearch, skill_slot_2_x, skill_slot_2_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_2%
-	ImageSearch, skill_slot_3_x, skill_slot_3_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_3%
-	ImageSearch, skill_slot_4_x, skill_slot_4_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %skill_slot_4%
-	ImageSearch, death_x, death_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %misc_death_skull%
-	; if (errorlevel=0) { ; DEBUG: STAYS COMMENTED UNTIL ALL MAPS HAVE MONSTER LOCATION VARIABLES
-	; 	sleep, 10500
-	; 	ImageSearch, button_prestige_x, button_prestige_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige%
-	; 	click, %button_prestige_x% %button_prestige_y%
-	; 	sleep, 250
-	; 	ImageSearch, button_prestige_prestige_x, button_prestige_prestige_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige_prestige%
-	; 	click, %button_prestige_prestige_x% %button_prestige_prestige_y%
-	; 	sleep, 250
-	; 	ImageSearch, button_prestige_prestige_lets_go_x, button_prestige_prestige_lets_go_y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %button_prestige_prestige_lets_go%
-	; 	click, %button_prestige_prestige_lets_go_x% %button_prestige_prestige_lets_go_y%
-	; 	sleep, 10000
-	; 	click, %button_layout_monster_x% %button_layout_monster_y%
-	; 	sleep, 250
-	; 	click, %button_layout_monster_load_x% %button_layout_monster_load_x%
-	; }
-	;maps & unique asset ;asssign monster coords	
-	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_cursed_clouds_asset%
+	;;detects if death skull is on screen
+	;;once it is it'll wait 10.5 seconds to ensure it is gone and then begin to prestige
+	;;it may fail at times, but overall will work 99% of the time (totally arbitrary number)
+	ImageSearch, death_x, death_y, 204, 456, 295, 484, %misc_death_skull%
+	if (errorlevel=0) { ; DEBUG: STAYS COMMENTED UNTIL ALL MAPS HAVE MONSTER LOCATION VARIABLES
+		click, %death_x%, %death_y%
+		MouseMove, 0, 0
+		sleep, 10500
+		ImageSearch, button_prestige_x, button_prestige_y, 0, 0, 61, 159, %button_prestige%
+		click, %button_prestige_x% %button_prestige_y%
+		sleep, 250
+		ImageSearch, button_prestige_prestige_x, button_prestige_prestige_y, 0, 0, 366, 782, %button_prestige_prestige%
+		click, %button_prestige_prestige_x% %button_prestige_prestige_y%
+		sleep, 250
+		ImageSearch, button_prestige_prestige_lets_go_x, button_prestige_prestige_lets_go_y, 0, 0, 266, 364, %button_prestige_prestige_lets_go%
+		click, %button_prestige_prestige_lets_go_x% %button_prestige_prestige_lets_go_y%
+		sleep, 7500
+		ImageSearch, button_layout_monster_x, button_layout_monster_y, 435, 97, 491, 160, %button_layout_monster%
+		click, %button_layout_monster_x% %button_layout_monster_y%
+		sleep, 250
+		ImageSearch, button_layout_monster_load_x, button_layout_monster_load_y, 337, 356, 460, 405, %button_layout_monster_load%
+		click, %button_layout_monster_load_x% %button_layout_monster_load_y%
+		sleep, 250
+		ImageSearch, button_layout_monster_save_x, button_layout_monster_save_y, 219, 357, 337, 407, %button_layout_monster_save%
+		click, %button_layout_monster_save_x% %button_layout_monster_save_y%
+		sleep, 250
+	}
+
+	;;determines which map you are in and assigns coordinate to dps and support monster
+	;;this is unique to my layout so get the coordinates for your dps and support using the left square bracket key
+	;;and them to the map you're in
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_cursed_clouds_asset%
 	if (errorlevel=0) {
 		monster_position_dps_x = 159, monster_position_dps_y = 204
 		monster_position_support_x = 211, monster_position_support_y = 503
 	}
-	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_beach_run_asset%
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_beach_run_asset%
 	if (errorlevel=0) {
 		monster_position_dps_x = 179, monster_position_dps_y = 528
 		monster_position_support_x = 316, monster_position_support_y = 287
 	}
-	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_enchanted_forest_asset%
+	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_enchanted_forest_asset%
 	if (errorlevel=0) {
 		monster_position_dps_x = 210, monster_position_dps_y = 474
 		monster_position_support_x = 314, monster_position_support_y = 643
 	}
-	ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_snowfall_asset%
+	ImageSearch, x, y, 356, 84, 438, 156, %map_normal_snowfall_asset%
 	if (errorlevel=0) {
-		monster_position_dps_x = 179, monster_position_dps_y = 451
-		monster_position_support_x = 311, monster_position_support_y = 453
+		monster_position_dps_x = 179, monster_position_dps_y = 447
+		monster_position_support_x = 311, monster_position_support_y = 449
 	}
-	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_lava_cave_asset%
-	; if (errorlevel=0) {
-	; 	monster_position_dps_x = 159
-	; 	monster_position_dps_y = 204
-	; 	monster_position_support_x = 211
-	; 	monster_position_support_y = 503
-	; }
-	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_normal_map_deadwood_asset%
-	; if (errorlevel=0) {
-	; 	monster_position_dps_x = 159
-	; 	monster_position_dps_y = 204
-	; 	monster_position_support_x = 211
-	; 	monster_position_support_y = 503
-	; }
+	ImageSearch, x, y, 132, 595, 198, 665, %map_normal_lava_cave_asset%
+	if (errorlevel=0) {
+		monster_position_dps_x = 371, monster_position_dps_y = 412
+		monster_position_support_x = 368, monster_position_support_y = 478
+	}
+	ImageSearch, x, y, 71, 574, 102, 608, %map_normal_deadwood_asset%
+	if (errorlevel=0) {
+		monster_position_dps_x = 341, monster_position_dps_y = 355
+		monster_position_support_x = 341, monster_position_support_y = 595
+	}
+
+	;; Bonus Maps: WON'T BE CODED IN FOR AWHILE, NEED TO UNLOCK
 	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_resource_farm_asset%
 	; if (errorlevel=0) {
-	; 	monster_position_dps_x = 159
-	; 	monster_position_dps_y = 204
-	; 	monster_position_support_x = 211
-	; 	monster_position_support_y = 503
+	; 	monster_position_dps_x = 159, monster_position_dps_y = 204
+	; 	monster_position_support_x = 211, monster_position_support_y = 503
 	; }
 	; ImageSearch, x, y, 0, 0, %A_ScreenWidth%, %A_ScreenHeight%, %map_bonus_deep_push_asset%
 	; if (errorlevel=0) {
-	; 	monster_position_dps_x = 159
-	; 	monster_position_dps_y = 204
-	; 	monster_position_support_x = 211
-	; 	monster_position_support_y = 503
+	; 	monster_position_dps_x = 159, monster_position_dps_y = 204
+	; 	monster_position_support_x = 211, monster_position_support_y = 503
 	; }
+
+	;;locates specific images onscreen and activates them if possible
+	;;it should be done quickly because of reduced search area
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 9, 100, 61, 162, %button_monster_level_up_upgrade_purchase_minimal%
+	ImageSearch, boss_rush_x, boss_rush_y, 132, 34, 182, 93, %boss_rush%
+	ImageSearch, button_layout_monster_close_x, button_layout_monster_close_y, 425, 761, 483, 824, %button_layout_monster_close%
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 266, 767, 369, 830, %button_monster_level_up_upgrade_purchase_minimal%
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_inactive_x, button_monster_level_up_upgrade_purchase_minimal_inactive_y, 266, 767, 369, 830, %button_monster_level_up_upgrade_purchase_minimal_inactive%
+	ImageSearch, button_monster_level_expand_x, button_monster_level_expand_y, 371, 768, 430, 830, %button_monster_level_expand%
+	ImageSearch, button_monster_level_collapse_x, button_monster_level_collapse_y, 368, 578, 434, 638, %button_monster_level_collapse%
+		click, %button_monster_level_collapse_x% %button_monster_level_collapse_y%
+		sleep, 50
+	ImageSearch, button_monster_level_close_x, button_monster_level_close_y, 429, 767, 485, 830, %button_monster_level_close%
+		click, %button_monster_level_close_x% %button_monster_level_close_y%
+		sleep, 50
+	ImageSearch, bonus_drone_swarm_x, bonus_drone_swarm_y, 9, 160, 58, 206, %bonus_drone_swarm%
+		click, %bonus_drone_swarm_x% %bonus_drone_swarm_y%
+		sleep, 50
+	ImageSearch, bonus_drone_swarm_play_x, bonus_drone_swarm_play_y, 133, 582, 362, 645, %bonus_drone_swarm_play%
+		click, %bonus_drone_swarm_play_x% %bonus_drone_swarm_play_y%
+		sleep, 50	
+	ImageSearch, bonus_cargo_carrier_x, bonus_cargo_carrier_y, 8, 216, 59, 266, %bonus_cargo_carrier%
+		click, %bonus_cargo_carrier_x% %bonus_cargo_carrier_y%
+		sleep, 50
+	ImageSearch, bonus_cargo_carrier_play_x, bonus_cargo_carrier_play_y, 134, 580, 362, 647, %bonus_cargo_carrier_play%
+		click, %bonus_drone_swarm_play_x% %bonus_cargo_carrier_play_y%
+		sleep, 50
+	ImageSearch, button_active_play_x, button_active_play_y, 68, 213, 430, 560, %button_active_play%
+		click, %button_active_play_x% %button_active_play_y%
+		sleep, 50
+	ImageSearch, bonus_tech_ship_x, bonus_tech_ship_y, 9, 270, 61, 323, %bonus_tech_ship%
+		click, %bonus_tech_ship_x% %bonus_tech_ship_y%
+		sleep, 50
+	ImageSearch, bonus_tech_ship_play_x, bonus_tech_ship_play_y, 137, 658, 362, 725, %bonus_tech_ship_play%
+		click, %bonus_tech_ship_play_x% %bonus_tech_ship_play_y%
+		sleep, 50
+	ImageSearch, bonus_close_variation_1_x, bonus_close_variation_1_y, 368, 44, 474, 417, %bonus_close_variation_1%
+		click, %bonus_close_variation_1_x% %bonus_close_variation_1_y%
+		sleep, 50
+	ImageSearch, bonus_close_variation_2_x, bonus_close_variation_2_y, 368, 44, 474, 417, %bonus_close_variation_2%
+		click, %bonus_close_variation_2_x% %bonus_close_variation_2_y%
+		sleep, 50
+	ImageSearch, bonus_close_variation_3_x, bonus_close_variation_3_y, 368, 44, 474, 417, %bonus_close_variation_3%
+		click, %bonus_close_variation_3_x% %bonus_close_variation_3_y%
+		sleep, 50
+	ImageSearch, bonus_close_variation_4_x, bonus_close_variation_4_y, 368, 44, 474, 417, %bonus_close_variation_4%
+		click, %bonus_close_variation_4_x% %bonus_close_variation_4_y%
+		sleep, 50
+	ImageSearch, bonus_close_variation_5_x, bonus_close_variation_5_y, 368, 44, 474, 417, %bonus_close_variation_5%
+		click, %bonus_close_variation_5_x% %bonus_close_variation_5_y%
+		sleep, 50
+			
+	;;activates skill in skill slots as soon as available
+	ImageSearch, skill_slot_1_x, skill_slot_1_y, 99, 766, 112, 784, %skill_slot_1%
+		click, %skill_slot_1_x% %skill_slot_1_y%
+		sleep, 50
+	ImageSearch, skill_slot_2_x, skill_slot_2_y, 173, 768, 186, 786, %skill_slot_2%
+		click, %skill_slot_2_x% %skill_slot_2_y%
+		sleep, 50
+	ImageSearch, skill_slot_3_x, skill_slot_3_y, 250, 768, 264, 784, %skill_slot_3%
+		click, %skill_slot_3_x% %skill_slot_3_y%
+		sleep, 50
+	ImageSearch, skill_slot_4_x, skill_slot_4_y, 326, 768, 336, 786, %skill_slot_4%
+		click, %skill_slot_4_x% %skill_slot_4_y%
+		sleep, 50
 	
-	; if button_monster_level_collapse_x >= 0 && button_monster_level_collapse_y >= 0:
-	; 	click, %button_monster_level_collapse_x%, %button_monster_level_collapse_y%
-	Random, x, 89, 406
-	Random, y, 320, 403
-	click, %x%, %y%
-	sleep, 50
+	;;this is where the monsters will be levelled up, it'll happen quickly so the 5 second delay at the end won't affect 
+	;;the monster reaching their max level before the enemies get too tough
 	click, %monster_position_dps_x% %monster_position_dps_y%
 	sleep, 50
 	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%
 	sleep, 50
 	click, %monster_position_support_x% %monster_position_support_y%
 	sleep, 50
-	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%	
-	sleep, 50
-	click, 435, 306 ; USED UNTIL IMAGESEARCH..ACTIVEPLAY CLOSE CODED
-	; sleep, 5000
+	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%
+	sleep, 5000 
+	;;this 5 second delay is required in order for the imagesearch to detect the death skull enabling prestige,
+	;;if it is removed then you'll rarely ever get to prestige once you've reached your max wave
 }
