@@ -2,7 +2,8 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-CoordMode, Pixel, Relative
+CoordMode, Pixel, Relative ; DO NOT DELETE OR IT WON'T CLICK IN THE RIGHT SPOTS
+Menu, Tray, Icon, F:\CACHE DRIVE\.Studies\Images\idle_monster_td\idle_monsters_td_icon_1.ico
 
 ScrollLock::reload
 Pause::pause
@@ -22,7 +23,7 @@ return
 
 if not WinActive("IdlesMonsterTD")
 	WinActivate, IdleMonsterTD
-	MouseMove, 100, 100
+	MouseMove, 20, 446
 
 ;;this'll block any mouse and keyboard inputs to make sure you don't screw up and accidentally click off game screen,
 ;;creating some irritating catastrophe
@@ -81,6 +82,7 @@ skill_slot_4 = %image_folder%skill_slot.png
 misc_death_skull = %image_folder%misc_death_skull.png
 misc_daily_rewards_available = %image_folder%misc_daily_rewards_available.png
 misc_daily_rewards_claim_now = %image_folder%misc_daily_rewards_claim_now.png
+popup_rate_review_close = %image_folder%popup_rate_review_close.png
 ;variable containing the assets needed to determine which map you're on
 map_normal_cursed_clouds_asset = %image_folder%map_normal_cursed_clouds_asset.png
 map_normal_beach_run_asset = %image_folder%map_normal_beach_run_asset.png
@@ -115,6 +117,9 @@ while True {
 		ImageSearch, button_prestige_prestige_lets_go_x, button_prestige_prestige_lets_go_y, 0, 0, 266, 364, %button_prestige_prestige_lets_go%
 		click, %button_prestige_prestige_lets_go_x% %button_prestige_prestige_lets_go_y%
 		sleep, 7500
+		ImageSearch, popup_rate_review_close_x, popup_rate_review_close_y, 395, 218, 467, 287, %popup_rate_review_close%
+		click, %popup_rate_review_close_x% %popup_rate_review_close_y%
+		sleep, 250
 		ImageSearch, button_layout_monster_x, button_layout_monster_y, 435, 97, 491, 160, %button_layout_monster%
 		click, %button_layout_monster_x% %button_layout_monster_y%
 		sleep, 250
@@ -252,7 +257,6 @@ while True {
 		sleep, 50
 
 	;;added variations to active play robot due to movement around the map
-	loop, 5 {
 	ImageSearch, bonus_active_play_variation_1_x, bonus_active_play_variation_1_y, 151, 319, 305, 522, %bonus_active_play_variation_1%
 		click, %bonus_active_play_variation_1_x% %bonus_active_play_variation_1_y%
 		sleep, 50
@@ -271,7 +275,6 @@ while True {
 	ImageSearch, bonus_active_play_variation_6_x, bonus_active_play_variation_6_y, 151, 319, 305, 522, %bonus_active_play_variation_6%
 		click, %bonus_active_play_variation_6_x% %bonus_active_play_variation_6_y%
 		sleep, 50
-	}
 	
 	;;this is where the monsters will be levelled up, it'll happen quickly so the 5 second delay at the end won't affect 
 	;;the monster reaching their max level before the enemies get too tough
