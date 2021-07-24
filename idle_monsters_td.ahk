@@ -57,6 +57,7 @@ bonus_close_variation_2 = %image_folder%bonus_close_variation_2.png
 bonus_close_variation_3 = %image_folder%bonus_close_variation_3.png
 bonus_close_variation_4 = %image_folder%bonus_close_variation_4.png
 bonus_close_variation_5 = %image_folder%bonus_close_variation_5.png
+bonus_close_variation_6 = %image_folder%bonus_close_variation_6.png
 bonus_drone_swarm = %image_folder%bonus_drone_swarm.png
 bonus_drone_swarm_play = %image_folder%bonus_drone_swarm_play.png
 bonus_cargo_carrier = %image_folder%bonus_cargo_carrier.png
@@ -78,9 +79,8 @@ skill_slot_2 = %image_folder%skill_slot.png
 skill_slot_3 = %image_folder%skill_slot.png
 skill_slot_4 = %image_folder%skill_slot.png
 misc_death_skull = %image_folder%misc_death_skull.png
-misc_daily_rewards_available_variation_1 = %image_folder%misc_daily_rewards_available_variation_1.png
-misc_daily_rewards_available_variation_2 = %image_folder%misc_daily_rewards_available_variation_2.png
-misc_daily_rewards_available_variation_3 = %image_folder%misc_daily_rewards_available_variation_2.png
+misc_daily_rewards_available = %image_folder%misc_daily_rewards_available.png
+misc_daily_rewards_claim_now = %image_folder%misc_daily_rewards_claim_now.png
 ;variable containing the assets needed to determine which map you're on
 map_normal_cursed_clouds_asset = %image_folder%map_normal_cursed_clouds_asset.png
 map_normal_beach_run_asset = %image_folder%map_normal_beach_run_asset.png
@@ -97,11 +97,6 @@ while True {
 	if not WinActive("IdlesMonsterTD")
 		WinActivate, IdleMonsterTD
 		MouseMove, 100, 100
-
-	;;makes sure level up bar is gone before searching for map assets	
-	ImageSearch, button_monster_level_close_x, button_monster_level_close_y, 429, 767, 485, 830, %button_monster_level_close%
-		click, %button_monster_level_close_x% %button_monster_level_close_y%
-		sleep, 50
 
 	;;detects if death skull is on screen
 	;;once it is it'll wait 10.5 seconds to ensure it is gone and then begin to prestige
@@ -131,16 +126,16 @@ while True {
 		sleep, 250
 	}
 
-	;;daily rewards like close buttons need multiple images since the yellow notification pulsates
-	loop, 5 {
-	ImageSearch, misc_daily_rewards_available_variation_1_x, misc_daily_rewards_available_variation_1_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_1
-	click, %misc_daily_rewards_available_variation_1_x% %misc_daily_rewards_available_variation_1_y%
-	ImageSearch, misc_daily_rewards_available_variation_2_x, misc_daily_rewards_available_variation_2_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_2
-	click, %misc_daily_rewards_available_variation_2_x% %misc_daily_rewards_available_variation_2_y%
-	ImageSearch, misc_daily_rewards_available_variation_3_x, misc_daily_rewards_available_variation_3_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_3
-	click, %misc_daily_rewards_available_variation_3_x% %misc_daily_rewards_available_variation_3_y%
-	}
-	
+	;;daily rewards: you can nest this segment within any of the map asset if statements if you want to only activate
+	;;it in a specific map ex. only activate daily rewards in beach run
+	ImageSearch, misc_daily_rewards_available_x, misc_daily_rewards_available_y, 9, 776, 59, 829, %misc_daily_rewards_available% 
+	sleep, 50
+	click, %misc_daily_rewards_available_x% %misc_daily_rewards_available_y%	
+	sleep, 50
+	ImageSearch, misc_daily_rewards_claim_now_x, misc_daily_rewards_claim_now_y, 133, 501, 362, 566, %misc_daily_rewards_claim_now% 
+	sleep, 50
+	click, %misc_daily_rewards_claim_now_x% %misc_daily_rewards_claim_now_y%	
+	sleep, 50
 
 	;;determines which map you are in and assigns coordinate to dps and support monster
 	;;this is unique to my layout so get the coordinates for your dps and support using the left square bracket key
@@ -150,7 +145,7 @@ while True {
 		monster_position_dps_x = 159, monster_position_dps_y = 204
 		monster_position_support_x = 211, monster_position_support_y = 503
 	}
-	ImageSearch, x, y, 413, 541, 459, 606, %map_normal_beach_run_asset%
+	ImageSearch, x, y, 126, 627, 159, 661, %map_normal_beach_run_asset%
 	if (errorlevel=0) {
 		monster_position_dps_x = 179, monster_position_dps_y = 528
 		monster_position_support_x = 316, monster_position_support_y = 287
@@ -196,12 +191,7 @@ while True {
 	; 	click, %boss_rush_x% %boss_rush_y%
 	; 	sleep, 50
 	;; Uncomment if you want boss rush on
-		
-	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 9, 100, 61, 162, %button_monster_level_up_upgrade_purchase_minimal%
-	ImageSearch, boss_rush_x, boss_rush_y, 132, 34, 182, 93, %boss_rush%
-	ImageSearch, button_layout_monster_close_x, button_layout_monster_close_y, 425, 761, 483, 824, %button_layout_monster_close%
-	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 266, 767, 369, 830, %button_monster_level_up_upgrade_purchase_minimal%
-	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_inactive_x, button_monster_level_up_upgrade_purchase_minimal_inactive_y, 266, 767, 369, 830, %button_monster_level_up_upgrade_purchase_minimal_inactive%
+
 	; ImageSearch, button_monster_level_expand_x, button_monster_level_expand_y, 371, 768, 430, 830, %button_monster_level_expand%
 	ImageSearch, button_monster_level_collapse_x, button_monster_level_collapse_y, 368, 578, 434, 638, %button_monster_level_collapse%
 		click, %button_monster_level_collapse_x% %button_monster_level_collapse_y%
@@ -243,6 +233,9 @@ while True {
 	ImageSearch, bonus_close_variation_5_x, bonus_close_variation_5_y, 368, 44, 474, 417, %bonus_close_variation_5%
 		click, %bonus_close_variation_5_x% %bonus_close_variation_5_y%
 		sleep, 50
+	ImageSearch, bonus_close_variation_6_x, bonus_close_variation_6_y, 368, 44, 474, 417, %bonus_close_variation_6%
+		click, %bonus_close_variation_6_x% %bonus_close_variation_6_y%
+		sleep, 50
 			
 	;;activates skill in skill slots as soon as available
 	ImageSearch, skill_slot_1_x, skill_slot_1_y, 99, 766, 112, 784, %skill_slot_1%
@@ -282,13 +275,20 @@ while True {
 	
 	;;this is where the monsters will be levelled up, it'll happen quickly so the 5 second delay at the end won't affect 
 	;;the monster reaching their max level before the enemies get too tough
+	ImageSearch, button_monster_level_up_upgrade_purchase_minimal_x, button_monster_level_up_upgrade_purchase_minimal_y, 266, 767, 369, 830, %button_monster_level_up_upgrade_purchase_minimal%
+	sleep, 100
 	click, %monster_position_dps_x% %monster_position_dps_y%
-	sleep, 50
+	sleep, 100
 	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%
-	sleep, 50
+	sleep, 100
 	click, %monster_position_support_x% %monster_position_support_y%
-	sleep, 50
+	sleep, 100
 	click, %button_monster_level_up_upgrade_purchase_minimal_x% %button_monster_level_up_upgrade_purchase_minimal_y%
+	sleep, 100
+	;;makes sure level up bar is gone before searching for map assets	
+	ImageSearch, button_monster_level_close_x, button_monster_level_close_y, 420, 761, 490, 829, %button_monster_level_close%
+		click, %button_monster_level_close_x% %button_monster_level_close_y%
+		sleep, 100
 	sleep, 5000 
 	;;this 5 second delay is required in order for the imagesearch to detect the death skull enabling prestige,
 	;;if it is removed then you'll rarely ever get to prestige once you've reached your max wave
