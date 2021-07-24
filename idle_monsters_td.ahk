@@ -7,6 +7,7 @@ CoordMode, Pixel, Relative
 ScrollLock::reload
 Pause::pause
 
+;;use this to get start: x, y and end: x, y coordinates 
 [::
 mouseGetPos, x, Y
 Clipboard = %x%, %y%
@@ -23,15 +24,13 @@ if not WinActive("IdlesMonsterTD")
 	WinActivate, IdleMonsterTD
 	MouseMove, 100, 100
 
-
 ;;this'll block any mouse and keyboard inputs to make sure you don't screw up and accidentally click off game screen,
 ;;creating some irritating catastrophe
 ;;if you do somehow go offscreen, code further down will reactivate Idle Monsters TD window
 ;;if for some ultra rare reason things go out of control and you can't stop the script from loading every program,
 ;;you have then 'IMMEDIATELY': [CTRL+ALT+DELETE] > [TASK MANAGER] > click [AUTOHOTKEY UNICODE 64-BIT] > press [DELETE] key
-;;if for some ultra times infinity reason it fails, then restarting your PC is your only option: its happened once out of,
-;;the thousands of tests I've done so don't expect it too occur unless your unlucky
-
+;;if for some ultra * infinity reason it fails, then restarting your PC is your only option: it happened once out of,
+;;the hundred of tests I've done so don't expect it too occur unless your unlucky
 BlockInput, On
 BlockInput, SendAndMouse
 BlockInput, MouseMove
