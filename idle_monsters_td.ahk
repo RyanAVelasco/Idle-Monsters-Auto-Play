@@ -132,8 +132,7 @@ while True {
 		sleep, 250
 	}
 
-	;;I've made sure daily rewards activate on Beach Run because it's easy to push here over other maps
-	;;as far as I'm aware anyways
+	;;daily rewards like close buttons need multiple images since the yellow notification pulsates
 	ImageSearch, misc_daily_rewards_available_variation_1_x, misc_daily_rewards_available_variation_1_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_1
 	click, %misc_daily_rewards_available_variation_1_x% %misc_daily_rewards_available_variation_1_y%
 	ImageSearch, misc_daily_rewards_available_variation_2_x, misc_daily_rewards_available_variation_2_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_2
