@@ -132,12 +132,14 @@ while True {
 	}
 
 	;;daily rewards like close buttons need multiple images since the yellow notification pulsates
+	loop, 5 {
 	ImageSearch, misc_daily_rewards_available_variation_1_x, misc_daily_rewards_available_variation_1_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_1
 	click, %misc_daily_rewards_available_variation_1_x% %misc_daily_rewards_available_variation_1_y%
 	ImageSearch, misc_daily_rewards_available_variation_2_x, misc_daily_rewards_available_variation_2_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_2
 	click, %misc_daily_rewards_available_variation_2_x% %misc_daily_rewards_available_variation_2_y%
 	ImageSearch, misc_daily_rewards_available_variation_3_x, misc_daily_rewards_available_variation_3_y, 9, 776, 59, 829, misc_daily_rewards_available_variation_3
 	click, %misc_daily_rewards_available_variation_3_x% %misc_daily_rewards_available_variation_3_y%
+	}
 	
 
 	;;determines which map you are in and assigns coordinate to dps and support monster
